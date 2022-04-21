@@ -1,0 +1,31 @@
+parameters:
+  - name: name
+    type: string
+    default:
+  - name: feed
+    type: string
+    default:
+
+stages:
+- stage: build_pwsh
+  displayName: Build PowerShell module
+  pool:
+    vmImage: ubuntu-latest
+  jobs:
+  - job: build
+    displayName: Build and publish
+    steps:
+      - task: PowerShell@2
+        displayName: Build package
+        inputs:
+          filePath: $(System.DefaultWorkingDirectory)/modules/${{ parameters.name }}/build.ps1
+          arguments: > 
+            -Version "$(Build.BuildNumber)" 
+            -Publish "$(Build.ArtifactStagingDirectory)"
+
+      - task: NuGetCommand@2
+        displayName: Upload to NuGet feed
+        inputs:
+          command: push
+          packagesToPush: $(Build.ArtifactStagingDirectory)/*.nupkg
+          publishVstsFeed: ${{ parameters.feed }}
