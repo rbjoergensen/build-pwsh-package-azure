@@ -1,27 +1,26 @@
 param (
     [Parameter(Mandatory=$true)]
-    [string] $Version,
+    [string] $version,
 
     [Parameter(Mandatory=$true)]
-    [string] $Publish
+    [string] $publish
 )
 
-$Author = "<Name of author>"
-$Company = "<Name of company>"
-$Description = "Module contains functions for generating random gibberish."
+$name = "Example"
+$author = "<Name of author>"
+$company = "<Name of company>"
+$description = "Module contains functions for generating random gibberish."
 
-$Name = "Example"
+$rootDir = "./modules/$($name)"
+$definition = "$rootDir/$($name).psd1"
+$module = "$($name).psm1"
+$functions = (Get-Childitem -Path "./modules/$($name)/Public" -Filter "*.ps1").BaseName
 
-$RootDir = "./modules/$($Name)"
-$Definition = "$RootDir/$($Name).psd1"
-$Module = "$($Name).psm1"
-$Functions = (Get-Childitem -Path "./modules/$($Name)/Public" -Filter "*.ps1").BaseName
+$repository = "build-repo"
+$publishFeed = $publish
+$publish = "$((Get-Location).Path.Replace('\','/'))/packages/$($name)"
 
-$Repository = "build-repo"
-$PublishFeed = $Publish
-$Publish = "$((Get-Location).Path.Replace('\','/'))/packages/$($Name)"
-
-Write-Host "Version set to '$Version'"
+Write-Host "Version set to '$version'"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
@@ -33,30 +32,30 @@ if ($null -eq (Get-Packageprovider -Name NuGet))
     Install-Packageprovider -name nuget -PackageManagementProvider Nuget -force
 }
 
-Write-Host "Creating directory $Publish"
-New-Item -Path $Publish -ItemType directory -Force | Out-Null
+Write-Host "Creating directory $publish"
+New-Item -Path $publish -ItemType directory -Force | Out-Null
 
 Write-Host "Listing Repositories"
-Get-psrepository | Where-Object {$_.Name -eq $Repository -or $_.SourceLocation -eq $Publish} | Unregister-PSRepository
+Get-psrepository | Where-Object {$_.Name -eq $repository -or $_.SourceLocation -eq $publish} | Unregister-PSRepository
 
 Write-Host "Registering Repository $Repository"
-Register-PSRepository -Name $Repository `
-                      -SourceLocation $Publish `
-                      -PublishLocation $Publish `
+Register-PSRepository -Name $repository `
+                      -SourceLocation $publish `
+                      -PublishLocation $publish `
                       -InstallationPolicy Untrusted
 
-Write-Host "Generating Module Manifest for $Definition"
-New-ModuleManifest -Path $Definition `
-                   -Author $Author `
-                   -CompanyName $Company `
-                   -RootModule $Module `
-                   -Description $Description `
-                   -ModuleVersion $Version `
-                   -FunctionsToExport $Functions
+Write-Host "Generating Module Manifest for $definition"
+New-ModuleManifest -Path $definition `
+                   -Author $author `
+                   -CompanyName $company `
+                   -RootModule $module `
+                   -Description $description `
+                   -ModuleVersion $version `
+                   -FunctionsToExport $functions
 
 Write-Host "Publishing Module"
-Publish-Module -Name $RootDir -Repository $Repository -Confirm:$False -Force
+Publish-Module -Name $rootDir -Repository $repository -Confirm:$False -Force
 
 Write-Host "Copy .nupkg to artifact staging directory"
-New-Item $PublishFeed -Type Directory -Force
-Copy-Item -Path "$($Publish)/$($Name).$($Version).nupkg" -Destination "$($PublishFeed)/$($Name).$($Version).nupkg" -Force -Verbose
+New-Item $publishFeed -Type Directory -Force
+Copy-Item -Path "$($publish)/$($name).$($version).nupkg" -Destination "$($publishFeed)/$($name).$($version).nupkg" -Force -Verbose
