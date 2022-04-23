@@ -1,5 +1,4 @@
 # Build and publish PowerShell modules to Azure DevOps feeds
-How to build and publish a PowerShell NuGet to an Azure DevOps feed.  
 ## Installing a package from an Azure DevOps feed
 ``` powershell
 $token = "<PersonalAccessToken>"
