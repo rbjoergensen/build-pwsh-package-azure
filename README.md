@@ -1,7 +1,7 @@
 # build-pwsh-package-azure
 How to build and publish a PowerShell NuGet to an Azure DevOps feed.  
 ## Installing a package from an Azure DevOps feed
-```
+``` powershell
 $token = "<PersonalAccessToken>"
 
 # Pwsh doesn't support v3 as of writing
