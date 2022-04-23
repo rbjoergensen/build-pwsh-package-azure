@@ -6,7 +6,7 @@ $token = "<PersonalAccessToken>"
 
 # Pwsh doesn't support v3 as of writing
 $feed = "https://pkgs.dev.azure.com/callofthevoid/_packaging/Powershell/nuget/v2"
-$source = "CotvPowershell"
+$source = "CotvPowerShell"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
