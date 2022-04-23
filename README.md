@@ -1,4 +1,4 @@
-# Build and publish PowerShell modules to Azure DevOps feeds
+# Build and publish PowerShell modules
 ## Installing a package from an Azure DevOps feed
 ``` powershell
 $token = "<PersonalAccessToken>"
