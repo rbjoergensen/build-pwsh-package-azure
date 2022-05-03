@@ -1,0 +1,61 @@
+name: Build and publish
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  calculate-version:
+    name: Calculate Version
+    runs-on: ubuntu-latest
+    outputs:
+      semVer: ${{ steps.gitversion.outputs.fullSemVer }}
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+        with:
+          fetch-depth: 0
+
+      - uses: gittools/actions/gitversion/setup@v0.9.7
+        name: Install GitVersion
+        with:
+          versionSpec: '5.x'
+
+      - uses: gittools/actions/gitversion/execute@v0.9.7
+        name: Determine Version
+        id: gitversion
+        with:
+          useConfigFile: true
+          configFilePath: gitversion.yml
+
+  build:
+    name: Build
+    runs-on: windows-latest
+    needs: calculate-version
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+
+      - run: |
+          ./build.ps1
+          -Version ${{ needs.calculate-version.outputs.semVer }}
+          -Publish ./
+
+      #- task: PowerShell@2
+      #  displayName: Build package
+      #  inputs:
+      #    filePath: $(System.DefaultWorkingDirectory)/modules/${{ parameters.name }}/build.ps1
+      #    arguments: > 
+      #      -Version "$(Build.BuildNumber)" 
+      #      -Publish "$(Build.ArtifactStagingDirectory)"
+
+      - run: ls -la
+
+
+
+      #- uses: actions/upload-artifact@v3
+      #  name: Upload artifact
+      #  with:
+      #    name: test-app-${{ needs.calculate-version.outputs.semVer }}
+      #    path: greetings-app/greetings-app.exe

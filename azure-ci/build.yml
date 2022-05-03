@@ -16,7 +16,7 @@ resources:
     name: MyProject/my-templates
 
 stages:
-- template: /templates/build.yml@templates
+- template: /powershell/build.yml@templates
   parameters:
     name: Example
     feed: PowerShell
