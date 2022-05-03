@@ -31,28 +31,17 @@ jobs:
 
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: calculate-version
     steps:
       - uses: actions/checkout@v3
         name: Checkout code
 
-      - run: |
-          ./build.ps1 `
-          -Version ${{ needs.calculate-version.outputs.semVer }} `
-          -Publish ./
-
-      #- task: PowerShell@2
-      #  displayName: Build package
-      #  inputs:
-      #    filePath: $(System.DefaultWorkingDirectory)/modules/${{ parameters.name }}/build.ps1
-      #    arguments: > 
-      #      -Version "$(Build.BuildNumber)" 
-      #      -Publish "$(Build.ArtifactStagingDirectory)"
+      - name: Build NuGet
+        shell: pwsh  
+        run: ./build.ps1 -Version ${{ needs.calculate-version.outputs.semVer }} -Publish ./
 
       - run: ls -la
-
-
 
       #- uses: actions/upload-artifact@v3
       #  name: Upload artifact
