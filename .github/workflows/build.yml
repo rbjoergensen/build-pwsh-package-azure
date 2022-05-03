@@ -30,7 +30,7 @@ jobs:
           configFilePath: gitversion.yml
 
   build:
-    name: Build
+    name: Build and publish
     runs-on: windows-latest
     needs: calculate-version
     steps:
@@ -38,9 +38,10 @@ jobs:
         name: Checkout code
 
       - name: Build
-        run: ./build.ps1 -Version ${{ needs.calculate-version.outputs.semVer }} -Publish ./
+        run: ./build.ps1 -Version ${{ needs.calculate-version.outputs.semVer }} -Publish ${{ github.workspace }}
 
-      - run: Get-ChildItem
+      - run: echo ${{ github.workspace }}
+      - run: Get-ChildItem ${{ github.workspace }}
 
       - uses: actions/setup-dotnet@v1
         name: Setup dotnet
@@ -50,7 +51,7 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Publish
-        run: dotnet nuget push ./*.nupkg --skip-duplicate --no-symbols true
+        run: dotnet nuget push ${{ github.workspace }}/*.nupkg --skip-duplicate --no-symbols true
 
       #- uses: actions/upload-artifact@v3
       #  name: Upload artifact
