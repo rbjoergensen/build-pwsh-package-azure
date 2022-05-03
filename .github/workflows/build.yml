@@ -47,15 +47,7 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Get filename
-        id: filename
-        run: echo ::set-output name=file_name::$(Get-Item ./*.nupkg).FullName
-
       - name: Publish
-        run: dotnet nuget push ${{ steps.vars.outputs.filename }} --skip-duplicate --no-symbols true
-
-      #- uses: actions/upload-artifact@v3
-      #  name: Upload artifact
-      #  with:
-      #    name: test-app-${{ needs.calculate-version.outputs.semVer }}
-      #    path: greetings-app/greetings-app.exe
+        run: |
+          $file = $(Get-Item ${{ github.workspace }}/*.nupkg).FullName
+          dotnet nuget push $file --skip-duplicate --no-symbols true
