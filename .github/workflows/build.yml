@@ -40,14 +40,17 @@ jobs:
       - name: Build
         run: ./build.ps1 -Version ${{ needs.calculate-version.outputs.semVer }} -Publish ${{ github.workspace }}
 
-      - uses: actions/setup-dotnet@v1
-        name: Setup dotnet
-        with:
-          source-url: https://nuget.pkg.github.com/rbjoergensen/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      #- uses: actions/setup-dotnet@v1
+      #  name: Setup dotnet
+      #  with:
+      #    source-url: https://nuget.pkg.github.com/rbjoergensen/index.json
+      #  env:
+      #    NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Add source
+        run: dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --name github --username ${{ github.repository_owner }} --password ${{ github.token }} --store-password-in-clear-text
 
       - name: Publish
         run: |
           $file = $(Get-Item ${{ github.workspace }}/*.nupkg).FullName
-          dotnet nuget push $file --skip-duplicate --no-symbols true
+          dotnet nuget push $file --skip-duplicate --no-symbols true --source github
