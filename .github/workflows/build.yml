@@ -40,6 +40,12 @@ jobs:
       - name: Build
         run: ./build.ps1 -Version ${{ needs.calculate-version.outputs.semVer }} -Publish ${{ github.workspace }}
 
+      - uses: actions/upload-artifact@v3
+        name: Upload artifact
+        with:
+          name: example-${{ needs.calculate-version.outputs.semVer }}.nupkg
+          path: ${{ github.workspace }}/*.nupkg
+
       - name: Add source
         run: dotnet nuget add source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --name github --username ${{ github.repository_owner }} --password ${{ github.token }} --store-password-in-clear-text
 
