@@ -1,0 +1,6 @@
+navigatorName: Publish Pwsh Modules
+category: Terraform
+includeLink: true
+files:
+- file: README.md
+  prettyName: Readme
