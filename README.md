@@ -12,17 +12,19 @@ $source = "CotvPowerShell"
 $credential = New-Object System.Management.Automation.PSCredential("whatever", 
     ($token | ConvertTo-SecureString -AsPlainText -Force))
 
-Register-PackageSource -Name $source `
-                       -ProviderName PowerShellGet `
-                       -Location $feed `
-                       -Trusted `
-                       -Credential $credential `
-                       -Force
+Register-PackageSource `
+    -Name $source `
+    -ProviderName PowerShellGet `
+    -Location $feed `
+    -Trusted `
+    -Credential $credential `
+    -Force
 
-Install-Module -Name "<NameOfPackage>" `
-               -Repository $source `
-               -Force `
-               -Credential $credential
+Install-Module `
+    -Name "<NameOfPackage>" `
+    -Repository $source `
+    -Force `
+    -Credential $credential
 ```
 ## Creating a personal access token(PAT)
 To create a personal access token go to your organization at this link.<br/>
