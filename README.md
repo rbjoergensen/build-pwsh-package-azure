@@ -3,7 +3,7 @@
 In this example I'm using the template from an external source on GitHub instead of the one local to the repository.
 I'm specifying the name I want the package to have and the feed in my current organization that i want to publish to.
 <br/><br/>
-The path to the module is expected to have file called `RootModule.psm1` with the same content as in the example and a folder called Public.
+The path to the module is expected to have file called `RootModule.psm1` with the same content as in the example and a folder called `Public`.
 The public folder should contain a file for each function named exactly after the function inside. 
 This is so that the build script can automatically include each function in the manifest.
 ``` yml
