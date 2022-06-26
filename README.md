@@ -6,7 +6,7 @@ I'm specifying the name I want the package to have and the feed in my current or
 The path to the module is expected to have file called `RootModule.psm1` with the same content as in the example and a folder called `Public`.
 The public folder should contain a file for each function named exactly after the function inside. 
 This is so that the build script can automatically include each function in the manifest.
-``` yml
+``` yaml
 trigger:
   branches:
     include:
