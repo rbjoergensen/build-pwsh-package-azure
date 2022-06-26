@@ -3,18 +3,28 @@ param (
     [string] $version,
 
     [Parameter(Mandatory=$true)]
-    [string] $publish
+    [string] $publish,
+    
+    [Parameter(Mandatory=$true)]
+    [string] $name,
+
+    [Parameter(Mandatory=$true)]
+    [string] $path,
+    
+    [Parameter(Mandatory=$true)]
+    [string] $author,
+    
+    [Parameter(Mandatory=$true)]
+    [string] $company,
+    
+    [Parameter(Mandatory=$true)]
+    [string] $description
 )
 
-$name = "Example"
-$author = "<Name of author>"
-$company = "<Name of company>"
-$description = "Module contains functions for generating random gibberish."
-
-$rootDir = "./modules/$($name)"
+$rootDir = $path
 $definition = "$rootDir/$($name).psd1"
-$module = "$($name).psm1"
-$functions = (Get-Childitem -Path "./modules/$($name)/Public" -Filter "*.ps1").BaseName
+$module = "RootModule.psm1"
+$functions = (Get-Childitem -Path "$($path)/Public" -Filter "*.ps1").BaseName
 
 $repository = "build-repo"
 $publishFeed = $publish
@@ -58,4 +68,10 @@ Publish-Module -Name $rootDir -Repository $repository -Confirm:$False -Force
 
 Write-Host "Copy .nupkg to artifact staging directory"
 New-Item $publishFeed -Type Directory -Force
+
+foreach($path in (Get-Childitem -recurse))
+{
+    write-output $path.fullname
+}
+
 Copy-Item -Path "$($publish)/$($name).$($version).nupkg" -Destination "$($publishFeed)/$($name).$($version).nupkg" -Force -Verbose

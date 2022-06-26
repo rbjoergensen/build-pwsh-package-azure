@@ -1,4 +1,36 @@
 # Build and publish PowerShell modules
+## Build and Publish using the Azure DevOps template
+In this example I'm using the template from an external source on GitHub instead of the one local to the repository.
+I'm specifying the name I want the package to have and the feed in my current organization that i want to publish to.
+<br/><br/>
+The path to the module is expected to have file called `RootModule.psm1` with the same content as in the example and a folder called Public.
+The public folder should contain a file for each function named exactly after the function inside. 
+This is so that the build script can automatically include each function in the manifest.
+``` yml
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - modules/Example/**
+
+resources:
+  repositories:
+  - repository: templates
+    type: github
+    name: rbjoergensen/azure-devops-templates
+
+stages:
+- template: /powershell/build.yml@templates
+  parameters:
+    name: MyTestPackage
+    path: $(System.DefaultWorkingDirectory)/modules/Example
+    feed: PowerShell
+    author: github.com/rbjoergensen
+    company: CallOfTheVoid
+    descritpion: An example module
+```
 ## Installing a package from an Azure DevOps feed
 PowerShell doesn't support v3 as of writing.
 ``` powershell
