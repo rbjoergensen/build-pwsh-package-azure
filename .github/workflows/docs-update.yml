@@ -1,0 +1,21 @@
+name: Docs update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/docs.yml'
+      - '*.md'
+
+jobs:
+  dispatch:
+    name: Dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: rbjoergensen/docs.callofthevoid.dk
+          event-type: docs-update
