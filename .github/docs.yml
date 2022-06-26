@@ -1,5 +1,5 @@
-navigatorName: Publish Pwsh Modules
-category: Terraform
+navigatorName: Build and publish PowerShell modules in Azure DevOps
+category: Azure DevOps
 includeLink: true
 files:
 - file: README.md
